@@ -67,6 +67,15 @@ class TestTranslateOne:
         with pytest.raises(ValueError):
             translator.translate(unsupported_language_text)
 
+    def test_exception_is_raised_for_unsupported_to_language(
+        self,
+        translator,
+        english_text
+    ):
+        with pytest.raises(ValueError):
+            translator.translate(english_text,
+                                 to_lang=tr.Language.OTHER)
+
     def test_with_selected_languages(
         self,
         translator,

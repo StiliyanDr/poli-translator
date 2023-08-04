@@ -35,8 +35,8 @@ class Translator:
         if to_lang is None:
             to_lang = self.__default_to_lang
 
-        if from_lang is Language.OTHER:
-            raise ValueError(f"Can translate: {text!r}")
+        if from_lang is Language.OTHER or to_lang is Language.OTHER:
+            raise ValueError(f"Can't translate: {text!r}")
 
         return self.__google_translator.translate(
             text,
