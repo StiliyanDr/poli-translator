@@ -41,6 +41,18 @@ class Translator:
             dest=text.to_language.name.lower()
         ).text
 
+    def translate_many(self, texts):
+        return [
+            self.__try_to_translate(t)
+            for t in texts
+        ]
+
+    def __try_to_translate(self, text):
+        try:
+            return self.translate(text)
+        except ValueError as e:
+            return e
+
     @property
     def default_to_language(self):
         return self.__default_to_lang

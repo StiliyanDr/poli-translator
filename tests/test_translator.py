@@ -47,7 +47,7 @@ class TestLanguageDetection:
         assert lang is tr.Language.OTHER
 
 
-class TestTranslateOne:
+class TestTranslate:
     def test_defaults_are_from_detected_and_to_from_ctor(
         self,
         german_text,
@@ -93,3 +93,28 @@ class TestTranslateOne:
         translated = translator.translate(text)
 
         assert translated == german_text
+
+
+class TestTranslateMany:
+    def test_empty_list_is_returned_for_empty_list(
+        self,
+        translator
+    ):
+        assert translator.translate_many([]) == []
+
+    def test_exceptions_are_returned_for_failing_translations(
+        self,
+        translator,
+        french_text,
+        english_text,
+        unsupported_language_text
+    ):
+        texts = [
+            tr.Text(french_text),
+            tr.Text(unsupported_language_text)
+        ]
+
+        translations = translator.translate_many(texts)
+
+        assert translations[0] == english_text
+        assert isinstance(translations[1], ValueError)
