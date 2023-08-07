@@ -1,5 +1,7 @@
 .venv/
 tests/
+commands/
+docs/
 
 *.md
 *.json
