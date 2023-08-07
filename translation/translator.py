@@ -24,24 +24,21 @@ class Translator:
             self.__google_translator.detect(text).lang
         )
 
-    def translate(self,
-                  text,
-                  *,
-                  from_lang=None,
-                  to_lang=None):
-        if from_lang is None:
-            from_lang = self.detect_language_of(text)
+    def translate(self, text):
+        if text.from_language is None:
+            text.from_language = self.detect_language_of(text.body)
 
-        if to_lang is None:
-            to_lang = self.__default_to_lang
+        if text.to_language is None:
+            text.to_language = self.__default_to_lang
 
-        if from_lang is Language.OTHER or to_lang is Language.OTHER:
-            raise ValueError(f"Can't translate: {text!r}")
+        if (text.from_language is Language.OTHER or
+                text.to_language is Language.OTHER):
+            raise ValueError(f"Can't translate: {text.body!r}")
 
         return self.__google_translator.translate(
-            text,
-            src=from_lang.name.lower(),
-            dest=to_lang.name.lower()
+            text.body,
+            src=text.from_language.name.lower(),
+            dest=text.to_language.name.lower()
         ).text
 
     @property

@@ -54,8 +54,9 @@ class TestTranslateOne:
         french_text
     ):
         translator = tr.Translator(default_to_lang=tr.Language.DE)
+        text = tr.Text(french_text)
 
-        translated = translator.translate(french_text)
+        translated = translator.translate(text)
 
         assert translated == german_text
 
@@ -64,17 +65,20 @@ class TestTranslateOne:
         translator,
         unsupported_language_text
     ):
+        text = tr.Text(unsupported_language_text)
+
         with pytest.raises(ValueError):
-            translator.translate(unsupported_language_text)
+            translator.translate(text)
 
     def test_exception_is_raised_for_unsupported_to_language(
         self,
         translator,
         english_text
     ):
+        text = tr.Text(english_text, to_language=tr.Language.OTHER)
+
         with pytest.raises(ValueError):
-            translator.translate(english_text,
-                                 to_lang=tr.Language.OTHER)
+            translator.translate(text)
 
     def test_with_selected_languages(
         self,
@@ -82,10 +86,10 @@ class TestTranslateOne:
         french_text,
         german_text
     ):
-        translated = translator.translate(
-            french_text,
-            from_lang=tr.Language.FR,
-            to_lang=tr.Language.DE
-        )
+        text = tr.Text(french_text,
+                       from_language=tr.Language.FR,
+                       to_language=tr.Language.DE)
+
+        translated = translator.translate(text)
 
         assert translated == german_text
