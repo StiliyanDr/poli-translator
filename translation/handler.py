@@ -4,11 +4,21 @@ from translation.language import Language
 from translation.text import Text
 
 
+_EVENT_SOURCE_KEYS = (
+    "EventSource",
+    "eventSource"
+)
+
+
 @enum.unique
 class EventType(enum.Enum):
     SNS = enum.auto()
     SQS = enum.auto()
     CUSTOM = enum.auto()
+
+    @classmethod
+    def from_string(cls, name):
+        return getattr(cls, name.upper(), EventType.CUSTOM)
 
 
 def lambda_handler(event, translator):
@@ -43,12 +53,17 @@ def _texts_from(event):
 
 def _determine_type_of(event):
     if "Records" in event:
-        if len(event["Records"]) == 1:
-            return EventType.SNS
-        else:
-            return EventType.SQS
-    else:
-        return EventType.CUSTOM
+        record = event["Records"][0]
+
+        for key in _EVENT_SOURCE_KEYS:
+            source = record.get(key)
+
+            if source is not None:
+                return EventType.from_string(
+                    source[4:]
+                )
+
+    return EventType.CUSTOM
 
 
 def _text_from_sns(event):

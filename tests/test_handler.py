@@ -2,6 +2,14 @@ from translation import handler as hr
 from translation import Language
 
 
+class TestEventType:
+    def test_from_valid_name(self):
+        assert hr.EventType.from_string("sns") is hr.EventType.SNS
+
+    def test_from_invalid_name_returns_custom(self):
+        assert hr.EventType.from_string("invalid") is hr.EventType.CUSTOM
+
+
 class TestCreateLanguage:
     def test_none_is_returned_for_none(self):
         assert hr._create_language(None) is None
@@ -33,6 +41,9 @@ class TestDetermineTypeOf:
 
     def test_for_custom(self, custom_event):
         assert hr._determine_type_of(custom_event) is hr.EventType.CUSTOM
+
+    def test_from_messed_up_custom_event(self, messed_up_custom_event):
+        assert hr._determine_type_of(messed_up_custom_event) is hr.EventType.CUSTOM
 
 
 class TestTextRetrieval:

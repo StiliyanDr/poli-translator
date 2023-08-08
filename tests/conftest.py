@@ -206,3 +206,14 @@ def custom_event_translation(custom_event_text):
     return {
         custom_event_text.body: "Benutzerdefinierter Text"
     }
+
+
+@pytest.fixture
+def messed_up_custom_event():
+    return {
+        "Records": [
+            {
+                "key": "value"
+            }
+        ]
+    }
