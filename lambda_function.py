@@ -1,4 +1,3 @@
-import logging
 import sys
 
 import translation as tr
@@ -9,9 +8,9 @@ translator = tr.Translator(default_to_lang=tr.Language.EN)
 
 def log_results(pairs):
     for i, (text, translation) in enumerate(pairs):
-        logging.info("ITEM ", i + 1)
-        logging.info("Original:", text)
-        logging.info("Translation:", translation)
+        print("ITEM ", i + 1)
+        print("Original:", text)
+        print("Translation:", translation)
 
 
 def lambda_handler(event, context):
