@@ -1,3 +1,5 @@
+import ast
+import base64
 import enum
 
 from translation.language import Language
@@ -14,6 +16,7 @@ _EVENT_SOURCE_KEYS = (
 class EventType(enum.Enum):
     SNS = enum.auto()
     SQS = enum.auto()
+    KINESIS = enum.auto()
     CUSTOM = enum.auto()
 
     @classmethod
@@ -39,6 +42,8 @@ def _texts_from(event):
         if t is EventType.SNS
         else _text_from_sqs
         if t is EventType.SQS
+        else _text_from_kinesis
+        if t is EventType.KINESIS
         else _text_from_custom_event
     )
 
@@ -112,3 +117,28 @@ def _text_from_custom_event(event):
         from_language=_create_language(event.get("from_language")),
         to_language=_create_language(event.get("to_language"))
     )
+
+
+def _text_from_kinesis(event):
+    return [
+        _single_text_from_kinesis(record)
+        for record in event["Records"]
+    ]
+
+
+def _single_text_from_kinesis(record):
+    return _text_from_custom_event(
+        _decode_kinesis_data(record["kinesis"]["data"])
+    )
+
+
+def _decode_kinesis_data(d):
+    str_data = base64.b64decode(d).decode("utf-8").strip()
+
+    if str_data.startswith("{") and str_data.endswith("}"):
+        try:
+            return ast.literal_eval(str_data)
+        except Exception:
+            pass
+
+    return {"text": str_data}

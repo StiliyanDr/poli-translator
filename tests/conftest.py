@@ -1,3 +1,5 @@
+import base64
+
 import pytest
 
 import translation as tr
@@ -216,4 +218,72 @@ def messed_up_custom_event():
                 "key": "value"
             }
         ]
+    }
+
+
+@pytest.fixture
+def kinesis_event():
+    return {
+        "Records": [
+            {
+                "kinesis": {
+                    "kinesisSchemaVersion": "1.0",
+                    "partitionKey": "1",
+                    "sequenceNumber": "4959033827",
+                    "data": base64.b64encode(str({
+                        "text": "Hallo zusammen",
+                        "from_language": "DE",
+                        "to_language": "EN",
+                    }).encode("utf-8")),
+                    "approximateArrivalTimestamp": 1545084650.987
+                },
+                "eventSource": "aws:kinesis",
+                "eventVersion": "1.0",
+                "eventID": "shardId-000000000006:49590",
+                "eventName": "aws:kinesis:record",
+                "invokeIdentityArn": "arn",
+                "awsRegion": "us-east-2",
+                "eventSourceARN": "arn"
+            },
+            {
+                "kinesis": {
+                    "kinesisSchemaVersion": "1.0",
+                    "partitionKey": "1",
+                    "sequenceNumber": "4959033831",
+                    "data": base64.b64encode(
+                        "Le chat est grand".encode("utf-8")
+                    ),
+                    "approximateArrivalTimestamp": 1545084650.987
+                },
+                "eventSource": "aws:kinesis",
+                "eventVersion": "1.0",
+                "eventID": "shardId-000000000006:49590",
+                "eventName": "aws:kinesis:record",
+                "invokeIdentityArn": "arn",
+                "awsRegion": "us-east-2",
+                "eventSourceARN": "arn"
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def kinesis_text():
+    return [
+        tr.Text(
+            body="Hallo zusammen",
+            from_language=tr.Language.DE,
+            to_language=tr.Language.EN
+        ),
+        tr.Text(
+            body="Le chat est grand"
+        ),
+    ]
+
+
+@pytest.fixture
+def kinesis_translation(kinesis_text):
+    return {
+        kinesis_text[0].body: "Hello everyone",
+        kinesis_text[1].body: "The cat is big",
     }

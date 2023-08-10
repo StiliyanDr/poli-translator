@@ -1,3 +1,5 @@
+import base64
+
 from translation import handler as hr
 from translation import Language
 
@@ -45,6 +47,9 @@ class TestDetermineTypeOf:
     def test_from_messed_up_custom_event(self, messed_up_custom_event):
         assert hr._determine_type_of(messed_up_custom_event) is hr.EventType.CUSTOM
 
+    def test_for_kinesis(self, kinesis_event):
+        assert hr._determine_type_of(kinesis_event) is hr.EventType.KINESIS
+
 
 class TestTextRetrieval:
     def test_for_sns(self, sns_event, sns_text):
@@ -65,6 +70,9 @@ class TestTextRetrieval:
     def test_texts_from_for_custom(self, custom_event, custom_event_text):
         assert hr._texts_from(custom_event) == [custom_event_text]
 
+    def test_texts_from_for_kinesis(self, kinesis_event, kinesis_text):
+        assert hr._texts_from(kinesis_event) == kinesis_text
+
 
 class TestLambdaHandler:
     def test_for_sns(self, sns_event, sns_translation, translator):
@@ -75,3 +83,26 @@ class TestLambdaHandler:
 
     def test_for_custom(self, custom_event, custom_event_translation, translator):
         assert hr.lambda_handler(custom_event, translator) == custom_event_translation
+
+    def test_for_kinesis(self, kinesis_event, kinesis_translation, translator):
+        assert hr.lambda_handler(kinesis_event, translator) == kinesis_translation
+
+
+class TestDecodeKinesisData:
+    def test_from_plain_string(self):
+        original_data = "The cat is big"
+        encoded_data = base64.b64encode(original_data.encode("utf-8"))
+
+        assert hr._decode_kinesis_data(
+            encoded_data
+        ) == {"text": original_data}
+
+    def test_from_dictionary(self):
+        original_data = {"text": "Hello there", "to_language": "DE"}
+        encoded_data = base64.b64encode(
+            str(original_data).encode("utf-8")
+        )
+
+        assert hr._decode_kinesis_data(
+            encoded_data
+        ) == original_data
