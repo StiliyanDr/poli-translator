@@ -28,10 +28,10 @@ def lambda_handler(event, translator):
     texts = _texts_from(event)
     translations = translator.translate_many(texts)
 
-    return {
-        t.body: tr if isinstance(tr, str) else None
+    return [
+        (t.body, tr if isinstance(tr, str) else None)
         for t, tr in zip(texts, translations)
-    }
+    ]
 
 
 def _texts_from(event):

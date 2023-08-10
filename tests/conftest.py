@@ -82,7 +82,7 @@ def sns_text(sns_event):
 
 @pytest.fixture
 def sns_translation(sns_text):
-    return {sns_text.body: "Bonjour, je suis SNS"}
+    return [(sns_text.body, "Bonjour, je suis SNS")]
 
 
 @pytest.fixture
@@ -143,10 +143,10 @@ def sqs_event():
 
 @pytest.fixture
 def sqs_translation(sqs_text):
-    return {
-        sqs_text[0].body: "Bonjour, c'est SQS 1",
-        sqs_text[1].body: "Bonjour, c'est SQS 2",
-    }
+    return [
+        (sqs_text[0].body, "Bonjour, c'est SQS 1"),
+        (sqs_text[1].body, "Bonjour, c'est SQS 2"),
+    ]
 
 
 @pytest.fixture
@@ -205,9 +205,9 @@ def custom_event_text(custom_event):
 
 @pytest.fixture
 def custom_event_translation(custom_event_text):
-    return {
-        custom_event_text.body: "Benutzerdefinierter Text"
-    }
+    return [
+        (custom_event_text.body, "Benutzerdefinierter Text")
+    ]
 
 
 @pytest.fixture
@@ -283,7 +283,7 @@ def kinesis_text():
 
 @pytest.fixture
 def kinesis_translation(kinesis_text):
-    return {
-        kinesis_text[0].body: "Hello everyone",
-        kinesis_text[1].body: "The cat is big",
-    }
+    return [
+        (kinesis_text[0].body, "Hello everyone"),
+        (kinesis_text[1].body, "The cat is big"),
+    ]
