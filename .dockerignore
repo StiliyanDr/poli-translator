@@ -2,6 +2,7 @@
 tests/
 commands/
 docs/
+dynamodb/
 
 *.md
 *.json

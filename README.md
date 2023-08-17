@@ -21,6 +21,8 @@ The repository consists of the following resources:
   The AWS Lambda function is packaged via a [Docker image](https://docs.aws.amazon.com/lambda/latest/dg/python-image.html) (see *Dockerfile*). *lambda_function.py* is the module containing the event handler called by Lambda
 * commands  
   This directory contains Markdown files that describe the various Docker and AWS commands that can be run to package the source code and set up the various AWS resources
+* dynamodb  
+  A package containing some example for working with DynamoDB via the AWS Python SDK
 
 ## Function input and output
 
@@ -48,4 +50,3 @@ The function's response is a JSON document with multiple fields, the most import
 [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)  
 
 [Ingegration of AWS Lambda with other services](https://docs.aws.amazon.com/lambda/latest/dg/lambda-services.html)
-
